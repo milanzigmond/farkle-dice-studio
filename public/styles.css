@@ -1,0 +1,146 @@
+body {
+	font-family: Arial, sans-serif;
+	text-align: center;
+	margin: 20px;
+}
+
+#dice {
+	margin: 20px 0;
+}
+
+input[type='range'] {
+	width: 80%;
+	margin: 10px auto;
+	display: block;
+}
+
+#dice-container {
+	background-image: url('simple.png');
+	background-size: contain;
+
+	background-position: center;
+	padding: 20px;
+	border-radius: 10px;
+	display: inline-block;
+	width: 80%; /* Match the slider width */
+	margin: 0 auto; /* Center the div horizontally */
+	margin-bottom: 20px; /* Add space below the div */
+}
+
+#button-row {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	margin-bottom: 20px;
+}
+
+#button-row button {
+	padding: 10px 20px;
+	font-size: 16px;
+	border: none;
+	border-radius: 5px;
+	background-color: #007bff;
+	color: white;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+#button-row button:hover {
+	background-color: #0056b3;
+}
+
+#page-container {
+	display: flex;
+	flex-direction: row;
+	height: 100vh; /* Full height of the viewport */
+}
+
+#left-column,
+#middle-column,
+#right-column {
+	flex: 1; /* Each column takes up one-third of the width */
+	padding: 20px;
+	overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+#left-column {
+	background-color: #f9f9f9; /* Light background for the left column */
+}
+
+#middle-column {
+	background-color: #ffffff; /* White background for the middle column */
+	border-left: 1px solid #ddd; /* Add a border to separate columns */
+	border-right: 1px solid #ddd;
+}
+
+#right-column {
+	background-color: #e9ecef; /* Slightly darker background for the right column */
+}
+
+#title-container {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+#saved-filters {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.filter-preview {
+	display: flex;
+	align-items: center;
+	justify-content: space-between; /* Align content to the left and right */
+	padding: 10px;
+	background-color: #ffffff;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+}
+
+.filter-preview img {
+	width: 50px;
+	height: 50px;
+	border-radius: 5px;
+	margin-right: 10px; /* Add spacing between the image and the name */
+}
+
+.filter-preview p {
+	margin: 0;
+	font-size: 14px;
+	text-align: left; /* Align the name to the left */
+	flex-grow: 1; /* Allow the name to take up remaining space */
+}
+
+.filter-preview span {
+	color: #ff4d4d; /* Red color for the delete icon */
+	font-size: 18px;
+	cursor: pointer;
+	transition: color 0.3s ease;
+}
+
+.filter-preview span:hover {
+	color: #ff0000; /* Darker red on hover */
+}
+
+#textarea-button-row {
+	display: flex;
+	justify-content: flex-start; /* Align buttons to the left */
+	gap: 10px;
+	margin-top: 10px;
+}
+
+#textarea-button-row button {
+	padding: 10px 20px;
+	font-size: 14px;
+	border: none;
+	border-radius: 5px;
+	background-color: #28a745; /* Green background for the Add button */
+	color: white;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+#textarea-button-row button:hover {
+	background-color: #218838; /* Darker green on hover */
+}

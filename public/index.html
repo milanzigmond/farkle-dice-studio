@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Farkle Dice Studio</title>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<div id="title-container">
+			<h1>Farkle Dice Studio</h1>
+		</div>
+		<div id="page-container">
+			<div id="left-column">
+				<div id="dice-container">
+					<img id="dice" src="dice_1.png" alt="Dice Image" />
+				</div>
+				<div id="button-row">
+					<button id="randomise-button">Randomise</button>
+					<button id="save-button">Save Filters</button>
+					<button id="export-png-button">Export PNG</button>
+				</div>
+				<div>
+					<label for="slider1">Hue</label>
+					<span id="hueValue">50</span>
+					<input type="range" id="slider1" min="0" max="360" value="50" />
+
+					<label for="slider2">Saturation</label>
+					<span id="saturationValue">100</span>
+					<input type="range" id="slider2" min="0" max="300" value="100" />
+
+					<label for="slider3">Brightness</label>
+					<span id="brightnessValue">50</span>
+					<input type="range" id="slider3" min="60" max="200" value="50" />
+
+					<label for="slider4">Grayscale</label>
+					<span id="grayscaleValue">0</span>
+					<input type="range" id="slider4" min="0" max="100" value="0" />
+
+					<label for="slider5">Contrast</label>
+					<span id="contrastValue">100</span>
+					<input type="range" id="slider5" min="0" max="200" value="100" />
+
+					<label for="slider6">Sepia</label>
+					<span id="sepiaValue">0</span>
+					<input type="range" id="slider6" min="0" max="100" value="0" />
+				</div>
+			</div>
+			<div id="middle-column">
+				<h2>Saved Filters</h2>
+				<div style="margin-bottom: 10px">
+					<button id="clear-button">Clear</button>
+					<button id="generate-button">Generate</button>
+				</div>
+				<p id="total-filters" style="font-weight: bold; margin-bottom: 10px">
+					Total Filters: 0
+				</p>
+				<div
+					id="saved-filters"
+					style="display: flex; flex-direction: column"
+				></div>
+			</div>
+			<div id="right-column">
+				<h2>Import/Export</h2>
+				<label for="input-textarea">Input</label>
+				<textarea id="input-textarea" rows="5" style="width: 100%"></textarea>
+				<div id="textarea-button-row">
+					<button id="add-button">Add</button>
+				</div>
+				<label for="saved-filters-raw">Export</label>
+				<textarea
+					id="saved-filters-raw"
+					rows="10"
+					style="width: 100%; margin-top: 10px; font-family: monospace"
+					readonly
+				></textarea>
+				<div id="output-button-row" style="margin-top: 10px; text-align: right">
+					<button id="export-json-button">Export as JSON</button>
+					<button id="export-css-button">Export as CSS</button>
+				</div>
+			</div>
+		</div>
+		<script src="http://localhost:35729/livereload.js"></script>
+		<script type="module">
+			import { adjectives } from './adjectives.js'
+			import { nouns } from './nouns.js'
+
+			// Get references to the sliders, image, and value displays
+			const hueSlider = document.getElementById('slider1')
+			const saturationSlider = document.getElementById('slider2')
+			const brightnessSlider = document.getElementById('slider3')
+			const grayscaleSlider = document.getElementById('slider4')
+			const contrastSlider = document.getElementById('slider5')
+			const sepiaSlider = document.getElementById('slider6')
+			const diceImage = document.getElementById('dice')
+			const hueValueDisplay = document.getElementById('hueValue')
+			const saturationValueDisplay = document.getElementById('saturationValue')
+			const brightnessValueDisplay = document.getElementById('brightnessValue')
+			const grayscaleValueDisplay = document.getElementById('grayscaleValue')
+			const contrastValueDisplay = document.getElementById('contrastValue')
+			const sepiaValueDisplay = document.getElementById('sepiaValue')
+
+			// Function to update the image filter
+			function updateFilters() {
+				const hue = hueSlider.value
+				const saturation = saturationSlider.value
+				const brightness = brightnessSlider.value
+				const grayscale = grayscaleSlider.value
+				const contrast = contrastSlider.value
+				const sepia = sepiaSlider.value
+
+				diceImage.style.filter = `hue-rotate(${hue}deg) saturate(${saturation}%) brightness(${brightness}%) grayscale(${grayscale}%) contrast(${contrast}%) sepia(${sepia}%)`
+
+				// Update the displayed values
+				hueValueDisplay.textContent = hue
+				saturationValueDisplay.textContent = saturation
+				brightnessValueDisplay.textContent = brightness
+				grayscaleValueDisplay.textContent = grayscale
+				contrastValueDisplay.textContent = contrast
+				sepiaValueDisplay.textContent = sepia
+			}
+
+			// Initialize sliders and displayed values on page load
+			function initializeSliders() {
+				const initialHue = 0 // Updated initial hue value
+				const initialSaturation = 100 // Updated initial saturation value
+				const initialBrightness = 100 // Default initial brightness value
+				const initialGrayscale = 0 // Default initial grayscale value
+				const initialContrast = 100 // Default initial contrast value
+				const initialSepia = 0 // Default initial sepia value
+
+				// Set initial slider values
+				hueSlider.value = initialHue
+				saturationSlider.value = initialSaturation
+				brightnessSlider.value = initialBrightness
+				grayscaleSlider.value = initialGrayscale
+				contrastSlider.value = initialContrast
+				sepiaSlider.value = initialSepia
+
+				// Update the displayed values
+				hueValueDisplay.textContent = initialHue
+				saturationValueDisplay.textContent = initialSaturation
+				brightnessValueDisplay.textContent = initialBrightness
+				grayscaleValueDisplay.textContent = initialGrayscale
+				contrastValueDisplay.textContent = initialContrast
+				sepiaValueDisplay.textContent = initialSepia
+
+				// Apply the initial filter to the image
+				diceImage.style.filter = `hue-rotate(${initialHue}deg) saturate(${initialSaturation}%) brightness(${initialBrightness}%) grayscale(${initialGrayscale}%) contrast(${initialContrast}%) sepia(${initialSepia}%)`
+
+				// Show the saved filters and raw format on page load
+				updateSavedFilters()
+				updateSavedFiltersRaw()
+			}
+
+			// Function to generate a random integer between min and max (inclusive)
+			function getRandomInt(min, max) {
+				return Math.floor(Math.random() * (max - min + 1)) + min
+			}
+
+			// Function to randomise slider values
+			function randomiseSliders() {
+				hueSlider.value = getRandomInt(0, 360)
+				saturationSlider.value = getRandomInt(0, 300)
+				brightnessSlider.value = getRandomInt(60, 200)
+				grayscaleSlider.value = getRandomInt(0, 100)
+				contrastSlider.value = getRandomInt(0, 200) // Updated max value
+				sepiaSlider.value = getRandomInt(0, 100)
+
+				// Update the filters and displayed values
+				updateFilters()
+			}
+
+			// Set to track used names and ensure uniqueness
+			const usedNames = new Set()
+
+			// Array to store saved filter objects
+			const savedFilters = [
+				{
+					name: 'Gray',
+					hue: '0',
+					saturation: '100',
+					brightness: '130',
+					grayscale: '100',
+					contrast: '100',
+					sepia: '0'
+				},
+				{
+					name: 'Orange',
+					hue: '40',
+					saturation: '100',
+					brightness: '130',
+					grayscale: '0',
+					contrast: '100',
+					sepia: '0'
+				},
+				{
+					name: 'Green',
+					hue: '90',
+					saturation: '200',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '90',
+					sepia: '0'
+				},
+				{
+					name: 'Blue Light',
+					hue: '190',
+					saturation: '200',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '100',
+					sepia: '0'
+				},
+				{
+					name: 'Blue Dark',
+					hue: '240',
+					saturation: '130',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'Violet',
+					hue: '275',
+					saturation: '100',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'Black',
+					hue: '0',
+					saturation: '100',
+					brightness: '80',
+					grayscale: '100',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'Yellow',
+					hue: '0',
+					saturation: '100',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '100',
+					sepia: '0'
+				},
+				{
+					name: 'NAYV-BLUE2',
+					hue: '239',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-VIOLET',
+					hue: '258',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-PURPLE',
+					hue: '270',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-PURPLE-PINK',
+					hue: '282',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-PINK',
+					hue: '296',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-PINK2',
+					hue: '313',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-PINK3',
+					hue: '336',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-RED',
+					hue: '352',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-CARROT',
+					hue: '4',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-ORANGE',
+					hue: '21',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-BROWN',
+					hue: '47',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-KHAKI-GREEN',
+					hue: '72',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-GREEN',
+					hue: '88',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-GREEN2',
+					hue: '108',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-MENTHOL',
+					hue: '154',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-MENTHOL-BLUE',
+					hue: '176',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-BLUE',
+					hue: '194',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'DARK-0CEAN-BLUE',
+					hue: '219',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'BROWN-BRICK',
+					hue: '22',
+					saturation: '50',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'NEW-GREY',
+					hue: '66',
+					saturation: '0',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'bordue',
+					hue: '352',
+					saturation: '49',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '140',
+					sepia: '0'
+				},
+				{
+					name: 'redish-brown',
+					hue: '368',
+					saturation: '35',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '140',
+					sepia: '0'
+				},
+				{
+					name: 'dark-purple',
+					hue: '281',
+					saturation: '49',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '140',
+					sepia: '0'
+				},
+				{
+					name: 'dark-purple-bluish',
+					hue: '246',
+					saturation: '49',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '130',
+					sepia: '0'
+				},
+				{
+					name: 'navy-blue',
+					hue: '218',
+					saturation: '54',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '140',
+					sepia: '0'
+				},
+				{
+					name: 'navy-blue 2',
+					hue: '239',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'dark-khaki',
+					hue: '445',
+					saturation: '74',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '130',
+					sepia: '0'
+				},
+				{
+					name: 'menthol',
+					hue: '168',
+					saturation: '106',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '140',
+					sepia: '0'
+				},
+				{
+					name: 'neon-purple',
+					hue: '275',
+					saturation: '135',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'carrot',
+					hue: '44',
+					saturation: '131',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'tomato-cherry',
+					hue: '367',
+					saturation: '88',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'ruby',
+					hue: '139',
+					saturation: '54',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'dark-pink',
+					hue: '303',
+					saturation: '54',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'brown',
+					hue: '33',
+					saturation: '56',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'new-orange',
+					hue: '33',
+					saturation: '128',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '100',
+					sepia: '0'
+				},
+				{
+					name: 'new-green',
+					hue: '151',
+					saturation: '166',
+					brightness: '100',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'salat-green',
+					hue: '75',
+					saturation: '100',
+					brightness: '140',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'light-khaki',
+					hue: '87',
+					saturation: '45',
+					brightness: '119',
+					grayscale: '0',
+					contrast: '100',
+					sepia: '0'
+				},
+				{
+					name: 'beige',
+					hue: '53',
+					saturation: '52',
+					brightness: '141',
+					grayscale: '0',
+					contrast: '100',
+					sepia: '0'
+				},
+				{
+					name: 'light-green',
+					hue: '110',
+					saturation: '52',
+					brightness: '141',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'light-menthol',
+					hue: '130',
+					saturation: '52',
+					brightness: '141',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'light-blue',
+					hue: '197',
+					saturation: '52',
+					brightness: '141',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'light-blue-purplish',
+					hue: '228',
+					saturation: '52',
+					brightness: '141',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'light-purple',
+					hue: '254',
+					saturation: '64',
+					brightness: '145',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'light-pink-violet',
+					hue: '282',
+					saturation: '54',
+					brightness: '150',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'light-pink',
+					hue: '317',
+					saturation: '33',
+					brightness: '147',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				},
+				{
+					name: 'light-buble-gum-pink',
+					hue: '347',
+					saturation: '33',
+					brightness: '144',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'gentle-pink',
+					hue: '2',
+					saturation: '33',
+					brightness: '144',
+					grayscale: '0',
+					contrast: '110.00000000000001',
+					sepia: '0'
+				},
+				{
+					name: 'dark-pinkish',
+					hue: '341',
+					saturation: '84',
+					brightness: '88',
+					grayscale: '0',
+					contrast: '120',
+					sepia: '0'
+				}
+			]
+
+			// Function to generate a unique name based on adjectives and nouns
+			function generateFilterName() {
+				let name
+				do {
+					const adjective =
+						adjectives[Math.floor(Math.random() * adjectives.length)]
+					const noun = nouns[Math.floor(Math.random() * nouns.length)]
+					name = `${adjective} ${noun}`
+				} while (usedNames.has(name)) // Ensure the name is unique
+
+				usedNames.add(name) // Mark the name as used
+				return name
+			}
+
+			// Function to save the current slider values
+			function saveFilters() {
+				// Create a filter object with current slider values
+				const filterObject = {
+					name: generateFilterName(), // Generate a unique name
+					hue: hueSlider.value,
+					saturation: saturationSlider.value,
+					brightness: brightnessSlider.value,
+					grayscale: grayscaleSlider.value,
+					contrast: contrastSlider.value,
+					sepia: sepiaSlider.value
+				}
+
+				// Add the filter object to the savedFilters array
+				savedFilters.push(filterObject)
+
+				// Update the saved filters display
+				updateSavedFilters()
+				updateSavedFiltersRaw() // Update the raw display
+			}
+
+			// Function to update the saved filters display
+			function updateSavedFilters() {
+				const savedFiltersContainer = document.getElementById('saved-filters')
+				const totalFiltersLabel = document.getElementById('total-filters')
+				savedFiltersContainer.innerHTML = '' // Clear the container
+
+				// Update the total filters count
+				totalFiltersLabel.textContent = `Total Filters: ${savedFilters.length}`
+
+				// Loop through saved filters and create previews
+				savedFilters.forEach((filter, index) => {
+					const filterPreview = document.createElement('div')
+					filterPreview.className = 'filter-preview'
+					filterPreview.style.height = '100px'
+					filterPreview.style.display = 'flex'
+					filterPreview.style.alignItems = 'center'
+					filterPreview.style.border = '1px solid #ccc'
+					filterPreview.style.padding = '5px'
+					filterPreview.style.marginBottom = '5px'
+
+					// Create a small dice image with applied filters
+					const previewImage = document.createElement('img')
+					previewImage.src = 'dice_1.png'
+					previewImage.alt = `Filter ${index + 1}`
+					previewImage.style.filter = `hue-rotate(${filter.hue}deg) saturate(${filter.saturation}%) brightness(${filter.brightness}%) grayscale(${filter.grayscale}%) contrast(${filter.contrast}%) sepia(${filter.sepia}%)`
+					previewImage.style.width = '100px'
+					previewImage.style.height = '100px'
+
+					// Create a label for the filter name and order number
+					const filterLabel = document.createElement('p')
+					filterLabel.textContent = `${index + 1}. ${filter.name}`
+					filterLabel.style.marginTop = '10px'
+					filterLabel.style.fontSize = '14px'
+					filterLabel.style.textAlign = 'center'
+
+					// Create a delete icon
+					const deleteIcon = document.createElement('span')
+					deleteIcon.textContent = '🗑️'
+					deleteIcon.style.cursor = 'pointer'
+					deleteIcon.style.marginLeft = '10px'
+					deleteIcon.title = 'Delete this filter'
+
+					// Add click event to delete the filter
+					deleteIcon.addEventListener('click', () => {
+						savedFilters.splice(index, 1)
+						updateSavedFilters()
+						updateSavedFiltersRaw()
+					})
+
+					// Create an eye icon
+					const eyeIcon = document.createElement('span')
+					eyeIcon.textContent = '👁️'
+					eyeIcon.style.cursor = 'pointer'
+					eyeIcon.style.marginLeft = '10px'
+					eyeIcon.title = 'Apply this filter'
+
+					// Add click event to apply the filter
+					eyeIcon.addEventListener('click', () => {
+						hueSlider.value = filter.hue
+						saturationSlider.value = filter.saturation
+						brightnessSlider.value = filter.brightness
+						grayscaleSlider.value = filter.grayscale
+						contrastSlider.value = filter.contrast
+						sepiaSlider.value = filter.sepia
+						updateFilters()
+					})
+
+					// Add the preview image, label, delete icon, and eye icon to the filter preview
+					filterPreview.appendChild(previewImage)
+					filterPreview.appendChild(filterLabel)
+					filterPreview.appendChild(deleteIcon)
+					filterPreview.appendChild(eyeIcon)
+
+					// Add the filter preview to the container
+					savedFiltersContainer.appendChild(filterPreview)
+				})
+			}
+
+			// Function to update the saved filters raw display
+			function updateSavedFiltersRaw() {
+				const savedFiltersRaw = document.getElementById('saved-filters-raw')
+				savedFiltersRaw.value = JSON.stringify(savedFilters, null, 2)
+			}
+
+			// Function to parse multiple CSS blocks and add dice variants
+			function addVariantsFromCSS() {
+				const textarea = document.getElementById('input-textarea')
+				const cssText = textarea.value.trim()
+
+				// Split the input into individual CSS blocks
+				const cssBlocks = cssText
+					.split(/}\s*/)
+					.filter(block => block.trim() !== '')
+
+				cssBlocks.forEach(block => {
+					// Extract the comment as the name
+					const nameMatch = block.match(/\/\*\s*(.*?)\s*\*\//)
+					const name = nameMatch ? nameMatch[1] : 'Unnamed Variant'
+
+					// Extract the filter values
+					const filterMatch = block.match(/filter:\s*(.*?);/)
+					const filterText = filterMatch ? filterMatch[1] : ''
+
+					// Parse the filter values
+					const filterValues = {
+						hue:
+							(filterText.match(/hue-rotate\((.*?)deg\)/)?.[1] ||
+								defaultValues.hue) + '',
+						saturation:
+							(filterText.match(/saturate\((.*?)%\)/)?.[1] ||
+								defaultValues.saturation) + '',
+						brightness:
+							(filterText.match(/brightness\((.*?)%\)/)?.[1] ||
+								defaultValues.brightness) + '',
+						grayscale:
+							(filterText.match(/grayscale\((.*?)%\)/)?.[1] ||
+								defaultValues.grayscale) + '',
+						contrast:
+							(parseFloat(filterText.match(/contrast\((.*?)\)/)?.[1]) * 100 ||
+								defaultValues.contrast) + '',
+						sepia:
+							(filterText.match(/sepia\((.*?)%\)/)?.[1] ||
+								defaultValues.sepia) + ''
+					}
+
+					// Create a new filter object
+					const filterObject = {
+						name,
+						...filterValues
+					}
+
+					// Add the filter object to the savedFilters array
+					savedFilters.push(filterObject)
+				})
+
+				// Update the saved filters display
+				updateSavedFilters()
+				updateSavedFiltersRaw()
+
+				// Clear the textarea
+				textarea.value = ''
+			}
+
+			// Function to clear the saved filters
+			function clearSavedFilters() {
+				savedFilters.length = 0
+				updateSavedFilters()
+				updateSavedFiltersRaw()
+			}
+
+			// Function to generate 20 random filter objects
+			function generateRandomFilters() {
+				savedFilters.length = 0
+
+				for (let i = 0; i < 20; i++) {
+					savedFilters.push({
+						name: generateFilterName(),
+						hue: `${getRandomInt(0, 360)}`,
+						saturation: `${getRandomInt(0, 300)}`,
+						brightness: `${getRandomInt(60, 200)}`,
+						grayscale: `${getRandomInt(0, 100)}`,
+						contrast: `${getRandomInt(0, 200)}`,
+						sepia: `${getRandomInt(0, 100)}`
+					})
+				}
+
+				updateSavedFilters()
+				updateSavedFiltersRaw()
+			}
+
+			// Add event listener to the Save button
+			const saveButton = document.getElementById('save-button')
+			saveButton.addEventListener('click', saveFilters)
+
+			// Add event listener to the Randomise button
+			const randomiseButton = document.getElementById('randomise-button')
+			randomiseButton.addEventListener('click', randomiseSliders)
+
+			// Add event listeners to update filters in real time
+			hueSlider.addEventListener('input', updateFilters)
+			saturationSlider.addEventListener('input', updateFilters)
+			brightnessSlider.addEventListener('input', updateFilters)
+			grayscaleSlider.addEventListener('input', updateFilters)
+			contrastSlider.addEventListener('input', updateFilters)
+			sepiaSlider.addEventListener('input', updateFilters)
+
+			// Initialize sliders on page load
+			window.addEventListener('DOMContentLoaded', initializeSliders)
+
+			// Default slider values
+			const defaultValues = {
+				hue: 0,
+				saturation: 100,
+				brightness: 100,
+				grayscale: 0,
+				contrast: 100,
+				sepia: 0
+			}
+
+			// Update the Add button event listener
+			const addButton = document.getElementById('add-button')
+			addButton.addEventListener('click', addVariantsFromCSS)
+
+			// Add event listener to the Clear button
+			const clearButton = document.getElementById('clear-button')
+			clearButton.addEventListener('click', clearSavedFilters)
+
+			// Add event listener to the Generate button
+			const generateButton = document.getElementById('generate-button')
+			generateButton.addEventListener('click', generateRandomFilters)
+
+			// Add event listener to the Export as JSON button
+			const exportJsonButton = document.getElementById('export-json-button')
+			exportJsonButton.addEventListener('click', () => {
+				const rawFilters = document.getElementById('saved-filters-raw').value
+				const blob = new Blob([rawFilters], { type: 'application/json' })
+				const url = URL.createObjectURL(blob)
+				const a = document.createElement('a')
+				a.href = url
+				a.download = 'filters.json'
+				a.click()
+				URL.revokeObjectURL(url)
+			})
+
+			// Add event listener to the Export as CSS button
+			const exportCssButton = document.getElementById('export-css-button')
+			exportCssButton.addEventListener('click', () => {
+				const cssFilters = savedFilters
+					.map(
+						(filter, index) => `/* ${filter.name} */
+.filter-${index + 1} {
+	filter: hue-rotate(${filter.hue}deg) saturate(${
+							filter.saturation
+						}%) brightness(${filter.brightness}%) grayscale(${
+							filter.grayscale
+						}%) contrast(${filter.contrast}%) sepia(${filter.sepia}%);
+}`
+					)
+					.join('\n\n')
+
+				const blob = new Blob([cssFilters], { type: 'text/css' })
+				const url = URL.createObjectURL(blob)
+				const a = document.createElement('a')
+				a.href = url
+				a.download = 'filters.css'
+				a.click()
+				URL.revokeObjectURL(url)
+			})
+
+			// Add event listener to the Export PNG button
+			document
+				.getElementById('export-png-button')
+				.addEventListener('click', () => {
+					const selectedFilter = document.querySelector(
+						'.filter-preview.selected'
+					)
+					const filterName = selectedFilter
+						? selectedFilter.querySelector('p').textContent.split('. ')[1]
+						: 'dice'
+
+					const canvas = document.createElement('canvas')
+					const context = canvas.getContext('2d')
+					const diceImage = document.getElementById('dice')
+
+					// Set canvas dimensions to match the dice image
+					canvas.width = diceImage.naturalWidth
+					canvas.height = diceImage.naturalHeight
+
+					// Apply filters and draw the image onto the canvas
+					context.filter = `hue-rotate(${hueSlider.value}deg) saturate(${saturationSlider.value}%) brightness(${brightnessSlider.value}%) grayscale(${grayscaleSlider.value}%) contrast(${contrastSlider.value}%) sepia(${sepiaSlider.value}%)`
+					context.drawImage(diceImage, 0, 0, canvas.width, canvas.height)
+
+					// Convert canvas to a PNG file and trigger download
+					canvas.toBlob(blob => {
+						const link = document.createElement('a')
+						link.href = URL.createObjectURL(blob)
+						link.download = `${filterName}.png`
+						link.click()
+						URL.revokeObjectURL(link.href)
+					}, 'image/png')
+				})
+
+			// Add click event to highlight selected filter
+			document.getElementById('saved-filters').addEventListener('click', e => {
+				const filterPreview = e.target.closest('.filter-preview')
+				if (filterPreview) {
+					document
+						.querySelectorAll('.filter-preview')
+						.forEach(el => el.classList.remove('selected'))
+					filterPreview.classList.add('selected')
+				}
+			})
+		</script>
+	</body>
+</html>

@@ -1,0 +1,27 @@
+export const adjectives = [
+	'Charming',
+	'Lovely',
+	'Graceful',
+	'Elegant',
+	'Cozy',
+	'Delightful',
+	'Cheerful',
+	'Gentle',
+	'Warm',
+	'Friendly',
+	'Joyful',
+	'Peaceful',
+	'Radiant',
+	'Serene',
+	'Whimsical',
+	'Playful',
+	'Sweet',
+	'Soft',
+	'Bright',
+	'Happy',
+	'Saturated',
+	'Vivid',
+	'Grayscale',
+	'Contrasty'
+	// ...repeat as needed...
+]
