@@ -77,6 +77,7 @@
 				<div id="output-button-row" style="margin-top: 10px; text-align: right">
 					<button id="export-json-button">Export as JSON</button>
 					<button id="export-css-button">Export as CSS</button>
+					<button id="export-all-pngs-button">Export all PNGs</button>
 				</div>
 			</div>
 		</div>
@@ -109,7 +110,7 @@
 				const contrast = contrastSlider.value
 				const sepia = sepiaSlider.value
 
-				diceImage.style.filter = `hue-rotate(${hue}deg) saturate(${saturation}%) brightness(${brightness}%) grayscale(${grayscale}%) contrast(${contrast}%) sepia(${sepia}%)`
+				diceImage.style.filter = `sepia(${sepia}%) hue-rotate(${hue}deg) saturate(${saturation}%) brightness(${brightness}%) contrast(${contrast}%) grayscale(${grayscale}%)`
 
 				// Update the displayed values
 				hueValueDisplay.textContent = hue
@@ -146,7 +147,7 @@
 				sepiaValueDisplay.textContent = initialSepia
 
 				// Apply the initial filter to the image
-				diceImage.style.filter = `hue-rotate(${initialHue}deg) saturate(${initialSaturation}%) brightness(${initialBrightness}%) grayscale(${initialGrayscale}%) contrast(${initialContrast}%) sepia(${initialSepia}%)`
+				diceImage.style.filter = `sepia(${initialSepia}%) hue-rotate(${initialHue}deg) saturate(${initialSaturation}%) brightness(${initialBrightness}%) contrast(${initialContrast}%) grayscale(${initialGrayscale}%)`
 
 				// Show the saved filters and raw format on page load
 				updateSavedFilters()
@@ -249,174 +250,12 @@
 					sepia: '60'
 				},
 				{
-					name: 'NAYV-BLUE2',
-					hue: '239',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '120',
-					sepia: '0'
-				},
-				{
-					name: 'DARK-VIOLET',
-					hue: '258',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '120',
-					sepia: '0'
-				},
-				{
-					name: 'DARK-PURPLE',
-					hue: '270',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '120',
-					sepia: '0'
-				},
-				{
-					name: 'DARK-PURPLE-PINK',
-					hue: '282',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '120',
-					sepia: '0'
-				},
-				{
-					name: 'DARK-PINK',
-					hue: '296',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '120',
-					sepia: '0'
-				},
-				{
-					name: 'DARK-PINK2',
-					hue: '313',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '120',
-					sepia: '0'
-				},
-				{
-					name: 'DARK-PINK3',
-					hue: '336',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '120',
-					sepia: '0'
-				},
-				{
-					name: 'DARK-RED',
-					hue: '352',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '120',
-					sepia: '0'
-				},
-				{
-					name: 'DARK-CARROT',
-					hue: '4',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '120',
-					sepia: '0'
-				},
-				{
-					name: 'DARK-ORANGE',
-					hue: '21',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '120',
-					sepia: '0'
-				},
-				{
-					name: 'DARK-BROWN',
-					hue: '47',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '120',
-					sepia: '0'
-				},
-				{
 					name: 'DARK-KHAKI-GREEN',
 					hue: '72',
 					saturation: '84',
 					brightness: '88',
 					grayscale: '0',
 					contrast: '120',
-					sepia: '0'
-				},
-				{
-					name: 'DARK-GREEN',
-					hue: '88',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '110.00000000000001',
-					sepia: '0'
-				},
-				{
-					name: 'DARK-GREEN2',
-					hue: '108',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '110.00000000000001',
-					sepia: '0'
-				},
-				{
-					name: 'DARK-MENTHOL',
-					hue: '154',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '110.00000000000001',
-					sepia: '0'
-				},
-				{
-					name: 'DARK-MENTHOL-BLUE',
-					hue: '176',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '110.00000000000001',
-					sepia: '0'
-				},
-				{
-					name: 'DARK-BLUE',
-					hue: '194',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '110.00000000000001',
-					sepia: '0'
-				},
-				{
-					name: 'DARK-0CEAN-BLUE',
-					hue: '219',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '110.00000000000001',
-					sepia: '0'
-				},
-				{
-					name: 'BROWN-BRICK',
-					hue: '22',
-					saturation: '50',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '110.00000000000001',
 					sepia: '0'
 				},
 				{
@@ -447,15 +286,6 @@
 					sepia: '0'
 				},
 				{
-					name: 'dark-purple',
-					hue: '281',
-					saturation: '49',
-					brightness: '100',
-					grayscale: '0',
-					contrast: '140',
-					sepia: '0'
-				},
-				{
 					name: 'dark-purple-bluish',
 					hue: '246',
 					saturation: '49',
@@ -471,15 +301,6 @@
 					brightness: '100',
 					grayscale: '0',
 					contrast: '140',
-					sepia: '0'
-				},
-				{
-					name: 'navy-blue 2',
-					hue: '239',
-					saturation: '84',
-					brightness: '88',
-					grayscale: '0',
-					contrast: '120',
 					sepia: '0'
 				},
 				{
@@ -501,44 +322,8 @@
 					sepia: '0'
 				},
 				{
-					name: 'neon-purple',
-					hue: '275',
-					saturation: '135',
-					brightness: '100',
-					grayscale: '0',
-					contrast: '120',
-					sepia: '0'
-				},
-				{
-					name: 'carrot',
-					hue: '44',
-					saturation: '131',
-					brightness: '100',
-					grayscale: '0',
-					contrast: '120',
-					sepia: '0'
-				},
-				{
-					name: 'tomato-cherry',
-					hue: '367',
-					saturation: '88',
-					brightness: '100',
-					grayscale: '0',
-					contrast: '120',
-					sepia: '0'
-				},
-				{
 					name: 'ruby',
 					hue: '139',
-					saturation: '54',
-					brightness: '100',
-					grayscale: '0',
-					contrast: '120',
-					sepia: '0'
-				},
-				{
-					name: 'dark-pink',
-					hue: '303',
 					saturation: '54',
 					brightness: '100',
 					grayscale: '0',
@@ -561,15 +346,6 @@
 					brightness: '100',
 					grayscale: '0',
 					contrast: '100',
-					sepia: '0'
-				},
-				{
-					name: 'new-green',
-					hue: '151',
-					saturation: '166',
-					brightness: '100',
-					grayscale: '0',
-					contrast: '110.00000000000001',
 					sepia: '0'
 				},
 				{
@@ -597,15 +373,6 @@
 					brightness: '141',
 					grayscale: '0',
 					contrast: '100',
-					sepia: '0'
-				},
-				{
-					name: 'light-green',
-					hue: '110',
-					saturation: '52',
-					brightness: '141',
-					grayscale: '0',
-					contrast: '110.00000000000001',
 					sepia: '0'
 				},
 				{
@@ -663,15 +430,6 @@
 					sepia: '0'
 				},
 				{
-					name: 'light-buble-gum-pink',
-					hue: '347',
-					saturation: '33',
-					brightness: '144',
-					grayscale: '0',
-					contrast: '110.00000000000001',
-					sepia: '0'
-				},
-				{
 					name: 'gentle-pink',
 					hue: '2',
 					saturation: '33',
@@ -681,16 +439,33 @@
 					sepia: '0'
 				},
 				{
-					name: 'dark-pinkish',
-					hue: '341',
-					saturation: '84',
-					brightness: '88',
+					name: 'Delightful Ribbon',
+					hue: '30',
+					saturation: '34',
+					brightness: '140',
 					grayscale: '0',
-					contrast: '120',
+					contrast: '110',
+					sepia: '0'
+				},
+				{
+					name: 'Lovely Star',
+					hue: '79',
+					saturation: '34',
+					brightness: '140',
+					grayscale: '0',
+					contrast: '110',
+					sepia: '0'
+				},
+				{
+					name: 'Grayscale Cupcake',
+					hue: '121',
+					saturation: '34',
+					brightness: '140',
+					grayscale: '0',
+					contrast: '110',
 					sepia: '0'
 				}
 			]
-
 			// Function to generate a unique name based on adjectives and nouns
 			function generateFilterName() {
 				let name
@@ -750,7 +525,7 @@
 					const previewImage = document.createElement('img')
 					previewImage.src = 'dice_1.png'
 					previewImage.alt = `Filter ${index + 1}`
-					previewImage.style.filter = `hue-rotate(${filter.hue}deg) saturate(${filter.saturation}%) brightness(${filter.brightness}%) grayscale(${filter.grayscale}%) contrast(${filter.contrast}%) sepia(${filter.sepia}%)`
+					previewImage.style.filter = `sepia(${filter.sepia}%) hue-rotate(${filter.hue}deg) saturate(${filter.saturation}%) brightness(${filter.brightness}%) contrast(${filter.contrast}%) grayscale(${filter.grayscale}%)`
 					previewImage.style.width = '100px'
 					previewImage.style.height = '100px'
 
@@ -957,11 +732,11 @@
 					.map(
 						(filter, index) => `/* ${filter.name} */
 .filter-${index + 1} {
-	filter: hue-rotate(${filter.hue}deg) saturate(${
+	filter: sepia(${filter.sepia}%) hue-rotate(${filter.hue}deg) saturate(${
 							filter.saturation
-						}%) brightness(${filter.brightness}%) grayscale(${
-							filter.grayscale
-						}%) contrast(${filter.contrast}%) sepia(${filter.sepia}%);
+						}%) brightness(${filter.brightness}%) contrast(${
+							filter.contrast
+						}%) grayscale(${filter.grayscale}%);
 }`
 					)
 					.join('\n\n')
@@ -995,7 +770,7 @@
 					canvas.height = diceImage.naturalHeight
 
 					// Apply filters and draw the image onto the canvas
-					context.filter = `hue-rotate(${hueSlider.value}deg) saturate(${saturationSlider.value}%) brightness(${brightnessSlider.value}%) grayscale(${grayscaleSlider.value}%) contrast(${contrastSlider.value}%) sepia(${sepiaSlider.value}%)`
+					context.filter = `sepia(${sepiaSlider.value}%) hue-rotate(${hueSlider.value}deg) saturate(${saturationSlider.value}%) brightness(${brightnessSlider.value}%) contrast(${contrastSlider.value}%) grayscale(${grayscaleSlider.value}%)`
 					context.drawImage(diceImage, 0, 0, canvas.width, canvas.height)
 
 					// Convert canvas to a PNG file and trigger download
@@ -1006,6 +781,34 @@
 						link.click()
 						URL.revokeObjectURL(link.href)
 					}, 'image/png')
+				})
+
+			// Add event listener to the Export all PNGs button
+			document
+				.getElementById('export-all-pngs-button')
+				.addEventListener('click', () => {
+					const canvas = document.createElement('canvas')
+					const context = canvas.getContext('2d')
+					const diceImage = document.getElementById('dice')
+
+					// Set canvas dimensions to match the dice image
+					canvas.width = diceImage.naturalWidth
+					canvas.height = diceImage.naturalHeight
+
+					// Loop through saved filters and export each as a PNG
+					savedFilters.forEach(filter => {
+						context.filter = `sepia(${filter.sepia}%) hue-rotate(${filter.hue}deg) saturate(${filter.saturation}%) brightness(${filter.brightness}%) contrast(${filter.contrast}%) grayscale(${filter.grayscale}%)`
+						context.drawImage(diceImage, 0, 0, canvas.width, canvas.height)
+
+						// Convert canvas to a PNG file and trigger download
+						canvas.toBlob(blob => {
+							const link = document.createElement('a')
+							link.href = URL.createObjectURL(blob)
+							link.download = `${filter.name}.png`
+							link.click()
+							URL.revokeObjectURL(link.href)
+						}, 'image/png')
+					})
 				})
 
 			// Add click event to highlight selected filter
