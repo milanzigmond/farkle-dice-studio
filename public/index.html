@@ -62,7 +62,7 @@
 			</div>
 			<div id="right-column">
 				<h2>Import/Export</h2>
-				<label for="input-textarea">Input</label>
+				<label for="input-textarea">Import</label>
 				<textarea id="input-textarea" rows="5" style="width: 100%"></textarea>
 				<div id="textarea-button-row">
 					<button id="add-button">Add</button>
@@ -844,7 +844,7 @@
 							(filterText.match(/grayscale\((.*?)%\)/)?.[1] ||
 								defaultValues.grayscale) + '',
 						contrast:
-							(parseFloat(filterText.match(/contrast\((.*?)\)/)?.[1]) * 100 ||
+							(parseFloat(filterText.match(/contrast\((.*?)\)/)?.[1]) ||
 								defaultValues.contrast) + '',
 						sepia:
 							(filterText.match(/sepia\((.*?)%\)/)?.[1] ||
