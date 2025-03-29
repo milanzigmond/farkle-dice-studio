@@ -795,19 +795,27 @@
 					canvas.width = diceImage.naturalWidth
 					canvas.height = diceImage.naturalHeight
 
+					// Use a delay to ensure all downloads are triggered
+					let delay = 0
+
 					// Loop through saved filters and export each as a PNG
 					savedFilters.forEach(filter => {
-						context.filter = `sepia(${filter.sepia}%) hue-rotate(${filter.hue}deg) saturate(${filter.saturation}%) brightness(${filter.brightness}%) contrast(${filter.contrast}%) grayscale(${filter.grayscale}%)`
-						context.drawImage(diceImage, 0, 0, canvas.width, canvas.height)
+						setTimeout(() => {
+							context.filter = `sepia(${filter.sepia}%) hue-rotate(${filter.hue}deg) saturate(${filter.saturation}%) brightness(${filter.brightness}%) contrast(${filter.contrast}%) grayscale(${filter.grayscale}%)`
+							context.drawImage(diceImage, 0, 0, canvas.width, canvas.height)
 
-						// Convert canvas to a PNG file and trigger download
-						canvas.toBlob(blob => {
-							const link = document.createElement('a')
-							link.href = URL.createObjectURL(blob)
-							link.download = `${filter.name}.png`
-							link.click()
-							URL.revokeObjectURL(link.href)
-						}, 'image/png')
+							// Convert canvas to a PNG file and trigger download
+							canvas.toBlob(blob => {
+								const link = document.createElement('a')
+								link.href = URL.createObjectURL(blob)
+								link.download = `${filter.name}.png`
+								link.click()
+								URL.revokeObjectURL(link.href)
+							}, 'image/png')
+						}, delay)
+
+						// Increment delay to avoid overlapping downloads
+						delay += 100
 					})
 				})
 
