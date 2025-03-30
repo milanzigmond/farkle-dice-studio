@@ -78,6 +78,7 @@
 					<button id="export-json-button">Export as JSON</button>
 					<button id="export-css-button">Export as CSS</button>
 					<button id="export-all-pngs-button">Export all PNGs</button>
+					<button id="export-cdn-button">Export for CDN</button>
 				</div>
 			</div>
 		</div>
@@ -810,6 +811,44 @@
 								const link = document.createElement('a')
 								link.href = URL.createObjectURL(blob)
 								link.download = `${index + 1} ${filter.name}.png`
+								link.click()
+								URL.revokeObjectURL(link.href)
+								resolve()
+							}, 'image/png')
+						})
+
+						// Add a small delay between downloads to avoid browser limits
+						await delay(100)
+					}
+				})
+
+			// Add event listener to the Export for CDN button
+			document
+				.getElementById('export-cdn-button')
+				.addEventListener('click', async () => {
+					const canvas = document.createElement('canvas')
+					const context = canvas.getContext('2d')
+					const diceImage = document.getElementById('dice')
+
+					// Set canvas dimensions to match the dice image
+					canvas.width = diceImage.naturalWidth
+					canvas.height = diceImage.naturalHeight
+
+					// Helper function to create a delay
+					const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+					// Loop through saved filters and export each as a PNG
+					for (let index = 0; index < savedFilters.length; index++) {
+						const filter = savedFilters[index]
+						context.filter = `sepia(${filter.sepia}%) hue-rotate(${filter.hue}deg) saturate(${filter.saturation}%) brightness(${filter.brightness}%) contrast(${filter.contrast}%) grayscale(${filter.grayscale}%)`
+						context.drawImage(diceImage, 0, 0, canvas.width, canvas.height)
+
+						// Convert canvas to a PNG file and trigger download
+						await new Promise(resolve => {
+							canvas.toBlob(blob => {
+								const link = document.createElement('a')
+								link.href = URL.createObjectURL(blob)
+								link.download = `dice_${index + 1}.png`
 								link.click()
 								URL.revokeObjectURL(link.href)
 								resolve()
