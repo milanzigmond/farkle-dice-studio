@@ -786,7 +786,7 @@
 			// Add event listener to the Export all PNGs button
 			document
 				.getElementById('export-all-pngs-button')
-				.addEventListener('click', () => {
+				.addEventListener('click', async () => {
 					const canvas = document.createElement('canvas')
 					const context = canvas.getContext('2d')
 					const diceImage = document.getElementById('dice')
@@ -795,28 +795,30 @@
 					canvas.width = diceImage.naturalWidth
 					canvas.height = diceImage.naturalHeight
 
-					// Use a delay to ensure all downloads are triggered
-					let delay = 0
+					// Helper function to create a delay
+					const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 					// Loop through saved filters and export each as a PNG
-					savedFilters.forEach(filter => {
-						setTimeout(() => {
-							context.filter = `sepia(${filter.sepia}%) hue-rotate(${filter.hue}deg) saturate(${filter.saturation}%) brightness(${filter.brightness}%) contrast(${filter.contrast}%) grayscale(${filter.grayscale}%)`
-							context.drawImage(diceImage, 0, 0, canvas.width, canvas.height)
+					for (let index = 0; index < savedFilters.length; index++) {
+						const filter = savedFilters[index]
+						context.filter = `sepia(${filter.sepia}%) hue-rotate(${filter.hue}deg) saturate(${filter.saturation}%) brightness(${filter.brightness}%) contrast(${filter.contrast}%) grayscale(${filter.grayscale}%)`
+						context.drawImage(diceImage, 0, 0, canvas.width, canvas.height)
 
-							// Convert canvas to a PNG file and trigger download
+						// Convert canvas to a PNG file and trigger download
+						await new Promise(resolve => {
 							canvas.toBlob(blob => {
 								const link = document.createElement('a')
 								link.href = URL.createObjectURL(blob)
-								link.download = `${filter.name}.png`
+								link.download = `${index + 1} ${filter.name}.png`
 								link.click()
 								URL.revokeObjectURL(link.href)
+								resolve()
 							}, 'image/png')
-						}, delay)
+						})
 
-						// Increment delay to avoid overlapping downloads
-						delay += 100
-					})
+						// Add a small delay between downloads to avoid browser limits
+						await delay(100)
+					}
 				})
 
 			// Add click event to highlight selected filter
